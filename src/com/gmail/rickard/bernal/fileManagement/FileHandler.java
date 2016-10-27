@@ -27,9 +27,9 @@ public class FileHandler {
         String savedStateFilePath = "files\\savedState.html";
         original = new File(savedStateFilePath);
         if(!original.exists()){
-            System.out.println("savedState.html did not exist, a new file was created");
+            System.out.println("savedState.html did not exist,\na new file was created");
         }else{
-            System.out.println("New data will be compared to existing file: savedState.html");
+            System.out.println("New data will be compared to\nexisting file: savedState.html");
         }
     }
 
