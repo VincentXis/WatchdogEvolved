@@ -12,16 +12,27 @@ import com.gmail.rickard.bernal.downloader.DownloaderWE;
 public class FileHandler {
     private DownloaderWE downloaderWE = new DownloaderWE(0);
 
+    private File previous = null;
     private File original = null;
     private File updateState = null;
 
     public FileHandler(String url){
+        previousStateFile();
         createSavedStateFile();
         updateState = getUpdateState(url);
-        copyContentFromUpdateFileToSavedFile(updateState,original);
+        copyContentFromFileToFile(updateState,original);
 
     }
 
+    private void previousStateFile(){
+        String previousSavedStateFilePath = "files\\previousSavedState.html";
+        previous = new File(previousSavedStateFilePath);
+        if(!previous.exists()){
+            System.out.println("previousSavedState.html did not exist,\na new file was created");
+        }else{
+            System.out.println("Data from savedState will be saved to:\npreviousSavedState.html");
+        }
+    }
 
     private void createSavedStateFile(){
         String savedStateFilePath = "files\\savedState.html";
@@ -49,8 +60,9 @@ public class FileHandler {
      * @param file2
      *            - savedState
      */
-    private void copyContentFromUpdateFileToSavedFile(File file1, File file2) {
+    private void copyContentFromFileToFile(File file1, File file2) {
         try {
+            Files.copy(original.toPath(), previous.toPath(), StandardCopyOption.REPLACE_EXISTING);
             if (!fileContentComparator(file1, file2)) {
                 System.out.println("The state of target url was different,\nnew data was saved");
                 Files.copy(file1.toPath(), file2.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -73,20 +85,18 @@ public class FileHandler {
      * @return true if equal, false if not.
      */
     private boolean fileContentComparator(File file1, File file2) {
-        boolean retval = false;
+        boolean isEqual = false;
         // files are read into two byteArrays here
         try {
             byte[] f1 = Files.readAllBytes(file1.toPath());
             byte[] f2 = Files.readAllBytes(file2.toPath());
 
             if (Arrays.equals(f1, f2)) {
-                retval = true;
-            } else {
-                Toolkit.getDefaultToolkit().beep();
+                isEqual = true;
             }
         } catch (Exception e) {
             // Fail!
         }
-        return retval;
+        return isEqual;
     }
 }

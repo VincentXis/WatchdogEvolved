@@ -1,303 +1,374 @@
-<html>
-<head>
-<title>Patrick Rothfuss - Official Website</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="imagetoolbar" content="no">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<title>Live Clock</title>
+<meta name="description" content="Site displays your local time, or the time in most any location around the world.">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1;">
+<link rel="stylesheet" type="text/css" href="mainStylesheet.css?new=y">
+<link rel="shortcut icon" href="favicon.ico">
+<meta name="robots" content="index,all">
+<script type="text/javascript">
+var prev = 'null' ; var DTo = 'null' ;
+
+function ToggleDisplay(d) {
+var obj = document.getElementById(d) ;
+obj.style.display = (obj.style.display=="none") ? "block" : "none" ;
+}
+
+function Hide( d ) {
+if ( d != 'null' ) { document.getElementById(d).style.display = "none"  ; }
+}
+
+function Show( d ) {
+if ( d != 'null' ) { document.getElementById(d).style.display = "block" ; }
+}
+
+function isVisible( d ) {
+if ( document.getElementById( d ).style.display == 'block' ) { return true ; } else { return false ; }
+}
+
+function getSysClock() {
+var sTime = new Date() ; sMin = sTime.getMinutes() ; sSec = sTime.getSeconds() ; sHrs = sTime.getHours() ;
+var ap = "am" ;
+if ( sHrs == 0 ) { sHrs = 12 ; ap = "am" ; }
+else { if ( sHrs == 12 ) { sHrs = 12 ; ap = "pm" ; }
+else { if ( sHrs > 12 ) { sHrs = sHrs - 12 ; ap = "pm" ; }
+}}
+var yourTime = "System Clock: " + ( ( sHrs < 10 )? "0" + sHrs : sHrs ) + ":" + ( ( sMin < 10 )? "0" + sMin : sMin ) + ":" + ( ( sSec < 10 )? "0" + sSec : sSec ) + " " + ap ; 
+document.forms[ "cpuT" ].clockString.value = yourTime ;
+if ( isVisible( 'SysClock' ) ) { setTimeout( 'getSysClock() ; ', 100 ) ; } else { return ; }
+}
+
+function getSysDate() {
+var sTime = new Date() ;
+var sSec = sTime.getSeconds() ; 
+var interval = ( 60 - sSec + 2 ) * 1000 ;
+var yourDate = formatedDate() ;
+document.forms[ 'cpuD' ].dateString.value = yourDate ;
+if ( isVisible( 'SysDate' ) ) { var DTo = setTimeout( 'getSysDate() ; ', interval ) ; } else { clearTimeout( 'DTo' ) ; return; }
+}
+
+var disclaimer = "The time shown may reflect the setting of the clock at your ISP." ; 
+var hours = 9 ;
+var hoursZulu = 13 ;
+var minZulu = 18 ;
+var minutes = 18 ;
+var seconds = 32 ;
+var ampm = "am" ;
+var tZone = "GMT" ;
+var offset = -4 ;
+var minOffset = 0 ;
+var suf = "" ;
+var timeChange = 0 ;
+var localTm = 1 ; 
+var DST = 1 ; 
 
-<LINK REL="stylesheet" HREF="../css/universal.css" TYPE="text/css">
+var longDate = "Thursday, October 27, 2016" ;
+var tmDesc = ampm + suf ;
+var time = new Date() ;
+var sysHrs =0 ;
+var sysMin = 0 ;
+var sysSec = 0 ; 
+var sysOff =  time.getTimezoneOffset() / 60 ;
+var clock1 = " " ;
+var clock2 = " " ;
+var clock3 = " " ;
+var clock4 = " " ;
+var clock5 = " " ;
+var clock6 = " " ;
+var clock7 = " " ;
+var useSysClock = 0 ;
+var clockDec = 0 ;
+var hours24 = 0 ;
+var min24 = 0 ;
+var mn = 0 ;
+var sysHoff = 0 ;
+var sysMoff = 0 ;
+var sysSoff = 0 ; 
+var sTemp = 0 ;
+var mTemp = 0 ;
+var hTemp = 0 ; 
+var sec = "00" ;
+var mnZ = "00" ;
+var hrZ = "00" ;
+var clientZ = " " ;
+var noReload = 0 ;
+var monthNow = 0 ;
+var weekdayNow = 0 ;
+var dayNow = 0 ;
 
-<script language="JavaScript">
-
-<!--hide me
-
-if((navigator.userAgent.indexOf("AOL") != -1) && (navigator.appVersion.indexOf("Mac") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/SNF_mac.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.userAgent.indexOf("Opera") != -1) && (navigator.appVersion.indexOf("Mac") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/NFO_win.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.userAgent.indexOf("Opera") != -1) && (navigator.appVersion.indexOf("Win") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/NFO_win.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.appName.indexOf("Safari") != -1) && (navigator.appVersion.indexOf("Mac") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/SNF_mac.css" type="text/css">');
-  	}
-
-else if((navigator.appName.indexOf("Netscape") != -1) && (navigator.appVersion.indexOf("Mac") != -1) && (parseInt(navigator.appVersion) < 5))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/SNF_mac.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.appName.indexOf("Netscape") >= -1) && (navigator.appVersion.indexOf("Mac") != -1) && (parseInt(navigator.appVersion) >= 5))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/SNF_mac.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.appName.indexOf("Netscape") >= -1) && (navigator.appVersion.indexOf("Win") != -1) && (parseInt(navigator.appVersion) >= 5))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/NFO_win.css" type="text/css">');
-  	}
-
-else if((navigator.appName.indexOf("Netscape") != -1) && (navigator.appVersion.indexOf("Win") != -1) && (parseInt(navigator.appVersion) < 5))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/NFO_win.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.appName.indexOf("Explorer") != -1) && (navigator.appVersion.indexOf("Mac") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/IE_mac.css" type="text/css">');
-  	}
-
-else if((navigator.appName.indexOf("Explorer") != -1) && (navigator.appVersion.indexOf("Win") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/IE_win.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.appName.indexOf("Mozilla") != -1) && (navigator.appVersion.indexOf("Mac") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/SNF_mac.css" type="text/css">');
-  	}
-  	  	
-else if((navigator.appName.indexOf("Mozilla") != -1) && (navigator.appVersion.indexOf("Win") != -1))
-	{
-  	document.writeln('<LINK REL="stylesheet" HREF="../css/NFO_win.css" type="text/css">');
-  	}
-
-else 
-	{
-	document.writeln('<LINK REL="stylesheet" HREF="../css/NFO_win.css" type="text/css">');
-	}
-	
-  	
-// show me-->
-</script>
-
-
-
-<style>
-
-div.feedburnerFeedBlock {
-	font-family: georgia, serif;
-	font-size: 14px;
-	line-height: 16px;
-	font-weight: normal;
-	color: #000000;
-	}
-
-div.feedburnerFeedBlock .headline {
-	font-weight: bold;
-	color: #000000;
-	}
-
-div.feedburnerFeedBlock .date {
-	margin: 0;
-	padding: 0;
-	font-style: italic;
-	}
-
-div.feedburnerFeedBlock  ul {
-	list-style: none;
-	margin-top: 0;
-	margin-left: 0;
-	padding-left: 0;
-	}
-
-div.feedburnerFeedBlock ul li {
-	list-style: none;
-	margin-left: 0;
-	margin-bottom: 7px;
-	padding-left: 0;
-	}	
-	
-
-div.feedburnerFeedBlock a:link { color: #c27300; text-decoration: none; }
-
-div.feedburnerFeedBlock a:visited { color: #c27300; text-decoration: none; }
-
-div.feedburnerFeedBlock a:hover { color: #e0b97f; text-decoration: underline;  }
-
-
-#creditfooter {
-	display: none;
-	}
-</style>
-
-<!--[if lt IE 7.]>
-<script defer type="text/javascript" src="../js/pngfix.js"></script>
-<![endif]-->
-<script language="javascript">//<!--
-function nada() {
+function getClock() {
+var time = new Date() ; sysMin = time.getMinutes() ; sysSec = time.getSeconds() ; sysHrs = time.getUTCHours() ; 
 }
-function imgSwitch(imgName,imgObjName) {
-if (document.images) {
-  document.images[imgName].src = eval(imgObjName + ".src");
+
+function formatedDate() {
+var dateNow = new Date() ;
+var yearNow = dateNow.getYear() ;
+yearNow = ( yearNow < 1900 )? yearNow + 1900 : yearNow ;
+monthNow = dateNow.getMonth() ;
+weekdayNow = dateNow.getDay() ;
+dayNow = dateNow.getDate() ;
+var dayD = " " ;
+dayD = ( dayNow < 10 )? "0" + dayNow : dayNow ;
+var dayarray=new Array( "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ) ;
+var montharray=new Array( "January" ,"February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ) ; 
+var retDate = dayarray[ weekdayNow ] + ", " + montharray[ monthNow ] + " " + dayD + ", " + yearNow ;
+return ( retDate ) ;
+}
+
+getClock() ;
+sysHoff = hoursZulu - sysHrs ;
+sysMoff = minZulu - sysMin ;
+sysSoff = seconds - sysSec ;
+if ( localTm ) {
+var clientOff = sysOff + DST ;
+switch ( clientOff ) {
+case 0: clientZ = "London" ; break ;
+case 4: clientZ = "Atlantic" ; break ;
+case 5: clientZ = "Eastern" ; break ;
+case 6: clientZ = "Central" ; break ;
+case 7: clientZ = "Mountain" ; break ;
+case 8: clientZ = "Pacific" ; break ;
+default: clientZ = " " ; 
+}
+if ( clientZ == " " ) { ; } else { if ( timeChange ) { tZone = "GMT" ; clock4 = ( DST == 0 ) ? "Standard time" : "Daylight time" ; clock4 = clock4 + " indicated for " + clientZ + " time zone " ; } else { longDate = formatedDate() ; tZone = clientZ ; offset = -1 * sysOff ; } }
+}
+
+function tellTime() {
+if ( seconds > 59 ) { 
+getClock() ;
+if ( ( sysHoff > -2 ) && ( sysHoff < 2 ) && ( sysMoff > -60 ) && ( sysMoff < 60 ) && ( sysSoff > -60 ) && ( sysSoff < 60 ) ) {
+sTemp = sysSec + sysSoff ; mTemp = sysMin + sysMoff ; hTemp = sysHrs + sysHoff ;
+}
+else { sTemp = 0 ; mTemp = minZulu ; hTemp = hoursZulu ; }
+
+if ( sTemp < 0 ) { sTemp = 60 + sTemp ; mTemp = mTemp - 1 ; }
+else { if ( sTemp > 59 ) { sTemp = sTemp - 60 ; mTemp = mTemp + 1 ; } }
+if ( mTemp < 0 ) { hTemp = hTemp - 1 ; mTemp = 60 + mTemp ; }
+else { if ( mTemp > 59 ) { hTemp = hTemp + 1 ; mTemp = 60 - mTemp ; } }
+if ( hTemp < 0 ) { hTemp = 24 + hTemp ; }
+else { if ( hTemp > 23 ) { hTemp = 24 - hTemp ; } }
+hoursZulu = hTemp ; minZulu = mTemp ; seconds = sTemp ;
+}
+
+hrZ = ( hoursZulu < 10 ) ? "0" + hoursZulu: hoursZulu ;
+if ( minZulu < 0 ) { mnZ = "00" ; } else { mnZ = ( minZulu < 10 ) ? "0" + minZulu : minZulu ; }
+if ( seconds < 0 ) { sec = "00" ; } else { sec = ( seconds < 10 ) ? "0" + seconds : seconds ; }
+if  ( ( sec == "05" ) && ( ( mnZ % 20 ) == 4 ) && ( ( noReload == 0 ) || ( hours == 12 ) ) ) { clock3 = "Adjusting clock ... " ; setTimeout( "window.location.reload() ; ", 1000 ) ; }
+if ( tZone == "GMT" ) {  clock1 = "It's now" ; clock2 = hrZ + "." + mnZ + "." + sec + " GMT" ; clock3 = clock4 ; clock5 = clock1 + " " + clock2 ; }
+else { 
+clock1 = hrZ + "." + mnZ + "." + sec + " GMT" ;
+clock3 = offset + ( ( minOffset == 0 )? " hours" : ":" + minOffset ) + " offset from GMT " ;
+hours24 = ( hoursZulu + offset ) ;
+if ( minOffset > 0 ) { minutes = ( offset < 0 )? ( minZulu - minOffset ) : ( minZulu + minOffset ) ; if ( minutes > 59 ) { minutes = ( minutes - 60 ) ; hours24 = ( hours24 + 1 ) ; } else { if ( minutes < 0 ) { minutes = 60 + minutes ; hours24 = ( hours24 - 1 ) ; } } }
+else { minutes = minZulu ; }
+if ( ( minutes < 0 ) | ( minutes > 59 ) ) { minutes = sysMin ; clock3 = "GMT minutes " + minZulu + ", system minutes " + sysMin + ", difference " + sysMoff ; }
+
+if ( hours24 < 0 ) { hours24 = ( 24 + hours24 ) ; }
+if ( hours24 > 23 ) { hours24 = ( hours24 - 24 ) ; }
+if ( hours24 == 0 ) { ampm = "am" ; hours = 12 ; tmDesc = "am " + suf ; }
+else { if ( hours24 == 12 ) { ampm = "pm" ;  hours = 12 ; tmDesc = "pm " + suf ;  } 
+else { if ( hours24 > 12 ) { ampm = "pm" ; hours = ( hours24 - 12 ) ; tmDesc = "pm " + suf ; }
+else { ampm="am" ; hours = hours24 ; tmDesc = "am " + suf ; }
 }}
 
-// preload images:
-if (document.images) {
-cover0 = new Image(277,416); cover0.src = "/images/page/cover_277.jpg";
-cover1 = new Image(277,416); cover1.src = "/images/page/cover2.jpg";
-cover2 = new Image(277,416); cover2.src = "/images/page/cover.jpg";
-cover3 = new Image(277,416); cover3.src = "/images/page/cover_uk.jpg";
+var mn = ( minutes < 10 ) ? "0" + minutes : minutes ;
+
+clock2 = hours + ":" + mn + " " + tmDesc + tZone ; 
+clock5 = hours + ":" + mn + ":" + sec + " " + tmDesc + tZone ; 
+clock6 = hours + ":" + mn + ":" + sec + " " + ampm ; 
+clock7 = suf + tZone ; 
+
 }
-//--></script>
-<script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-20230952-1']);
-  _gaq.push(['_setDomainName', 'patrickrothfuss.com']);
-  _gaq.push(['_trackPageview']);
+if ( ( mnZ % 20 ) == 2 ) { clock3 = disclaimer ; } 
+if ( ( tZone != "GMT" ) && ( ( mnZ % 10 ) == 6 ) ) { clock3 = "The date for the time displayed is " + longDate ; }
+if ( mnZ == 28 ) { clock3 = "Last program update: 08-24-2016" ; }
+if ( mnZ == 58 ) { clock3 = "Copyright © 2016 JustWord.net" ; }
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
+setClockVariables() ;
+seconds ++ ;
+setTimeout( "tellTime()",1000 ) ;
+}
+function setClockVariables() {
+document.forms[ "clock1" ].display1.value = clock1 ;
+document.forms[ "clock2" ].display2.value = clock2 ;
+document.forms[ "clock3" ].display3.value = clock3 ;
+}
+
+document.forms[ 'cpuD' ].dateString.value = formatedDate() ; 
+</script>
+
+
+
+
+				
+
+
+
+
+
 </head>
 
-<body marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" bgcolor="#282923"><a name="top" id="top"></a>
-<br><br>
-<div align="center">
-<div class="redborder">
-<div class="blackborder">
-<div class="yellowborder">
-<table width="794" cellspacing="0" cellpadding="0" style="border-style: solid; border-width: 1px; border-color: #d18e49;">
-  <tr>
-    <td width="794" height="86"><img src="../images/nav/top.jpg" width="794" height="86" /></td>
-  </tr>
-  <tr>
-    <td align="center">
-        <table width="794" height="25" border="0" cellspacing="0" cellpadding="0" style="background: url(../images/nav/bg_main_nav.jpg); background-position: top left;">
-          <tr>
-            
-            <td width="68" height="25"><a href="../content/index.asp" OnMouseOver="document.home.src='../images/nav/nav_home_on.png';" OnMouseOut="document.home.src='../images/nav/nav_home.png';"><img src="../images/nav/nav_home.png" width="90" height="25" border="0" name="home"></a></td>
-            <td width="93" height="25"><a href="../content/author.asp" OnMouseOver="document.author.src='../images/nav/nav_author_on.png';" OnMouseOut="document.author.src='../images/nav/nav_author.png';"><img src="../images/nav/nav_author.png" width="93" height="25" border="0" name="author"></a></td>
-            <td width="84" height="25"><a href="../content/books.asp" OnMouseOver="document.books.src='../images/nav/nav_books_on.png';" OnMouseOut="document.books.src='../images/nav/nav_books.png';"><img src="../images/nav/nav_books.png" width="85" height="25" border="0" name="books"></a></td>
-            <td width="79" height="25"><a href="../content/reviews.asp" OnMouseOver="document.buzz.src='../images/nav/nav_reviews_on.png';" OnMouseOut="document.buzz.src='../images/nav/nav_reviews.png';"><img src="../images/nav/nav_reviews.png" width="104" height="25" border="0" name="buzz"></a></td>
-            <td width="88" height="25"><a href="../content/world.asp" OnMouseOver="document.world.src='../images/nav/nav_world_on.png';" OnMouseOut="document.world.src='../images/nav/nav_world.png';"><img src="../images/nav/nav_world.png" width="91" height="25" border="0" name="world"></a></td>
-            <td width="84" height="25"><a href="http://blog.patrickrothfuss.com" OnMouseOver="document.blog.src='../images/nav/nav_blog_on.png';" OnMouseOut="document.blog.src='../images/nav/nav_blog.png';"><img src="../images/nav/nav_blog.png" width="81" height="25" border="0" name="blog"></a></td>
-            <td width="108" height="25"><a href="../content/buy.asp" OnMouseOver="document.buy.src='../images/nav/nav_buy_on.png';" OnMouseOut="document.buy.src='../images/nav/nav_buy.png';"><img src="../images/nav/nav_buy.png" width="107" height="25" border="0" name="buy"></a></td>
-			<td width="108" height="25"><a href="../content/tour.asp" OnMouseOver="document.tour.src='../images/nav/nav_tour_on.png';" OnMouseOut="document.tour.src='../images/nav/nav_tour.png';"><img src="../images/nav/nav_tour.png" width="142" height="25" border="0" name="tour"></a></td>
-            
-          </tr>
-        </table>
-      </td>
-  </tr>
-  <tr>
-    <td class="bg-all">
+<body onLoad="tellTime() ; " > 
+
+<div align="center">
+<img src="img/transparentHorizontal.png" alt="_" width="1000" height="1">
+</div>
 
+<div align="center" style="margin-top: 2px ; " >
+<p><b><a href="http://liveclock.net" class="t" >Home</a>&nbsp;&middot;&nbsp;<a href="http://blueClock.esand.net" class="t" >LiveClock&mdash;on blue</a>&nbsp;&middot;&nbsp;<a href="javascript: if ( isVisible( 'SysClock' ) ) { Hide( 'SysClock' ) ; Show( 'filler' ) ; } else { Hide( 'SysDate' ) ; Hide( 'filler' ) ; Show( 'SysClock' ) ; getSysClock() ; } " class="t"  >Show system clock</a>&nbsp;&middot;&nbsp;<a href="javascript: if ( isVisible( 'SysDate' ) ) { Hide( 'SysDate' ) ; Show( 'filler' ) ; } else { Hide( 'SysClock' ) ; Hide( 'filler' ) ; Show( 'SysDate' ) ; getSysDate() ; } " class="t"  >Show system date</a>&nbsp;&middot;&nbsp;<a href="/fullScreen.php" class="t" >Full screen</a>&nbsp;&middot;&nbsp;<a href="javascript:  window.location.reload() ; " class="t" >Reload screen</a></b><br></p>
+</div>
+<div align="center">
 
-<!--PAGE CONTENT-->
-
-<!--PAGE CONTENT-->
-
-<div align="center">
-<table border="0" cellpadding="20" cellspacing="0" backgroundimage="none" class="content-home" style="border-color: #393324;">
-  <tr>
-	<td align="left" valign="top">
-<div style="float: left; clear: left; margin: 0px 20px 15px 0px; width: 207px;">
-<img src="../images/page/on-sale-now.jpg" width="207" height="23" style="margin: 5px 5px 0px 0px; border: none;">
-<a href="../content/books.asp"><img src="../images/page/cover-slow-regard_277.jpg" width="207" border="0" style="margin: 0px 0px 0px 0px;"></a>
-
-<br>
-<div align="center"><a href="../content/buy.asp"><img src="../images/page/buy_the_book.jpg" width="150" height="37" style="margin: 5px 5px 0px 0px; border: none;" /></a>
-  <!--  <a href="../content/buy.asp"><img src="../images/page/buy_the_book.jpg" width="150" height="37" style="margin: 5px 5px 0px 0px; border: none;"></a> --></div>
+<table><tr><td>
+<p><br><br>&nbsp;</p>
+<style type="text/css">
+div.s1 input { font: 24px Courier ; color: #909090 ; padding: 10px ; text-align: center ; width: 1000px ; height: 30px ; border: 0 ; background-color: transparent ; }
+div.s2 input { font: 50px Courier ; color: #909090 ; padding: 10px ; text-align: center ; width: 1200px ; height: 60px ; border: 0 ; background-color: transparent ; font-weight: bold ; }
+div.s3 input { font: 11px Verdana ; color: #909090 ; padding: 10px ; text-align: center ; width: 1000px ; height: 15px ; border: 0 ; background-color: transparent ; }
+div.s4 input { font: 16px Verdana ; color: #909090 ; text-align: center ; width: 500px ; height: 18px ; border: 0 ; background-color: transparent ; }
+div.s5 input { font: 12px Verdana ; color: #909090 ; width: 1000px ; height: 15px ; border: 0 ; background-color: transparent ; }
+</style>
+<div align="center" class="s1">
+<form id="clock1" > 
+<input type="text" name="display1" readonly >
+</form>
 </div>
+<div align="center" class="s2">
+<form id="clock2" > 
+<input type="text" name="display2" readonly >
+</form>
+</div>
+<p><br><br>&nbsp;</p>
+</td></tr><tr><td>
+<table>
+<td width="10%"> <br> </td>
+<td width="80%">
+<img src="img/transparentHorizontal.png" alt="+" width="1200" height="1">
+<div align="center">
 
-<!--ROTATING QUOTE-->
+<p style="font: 10px Verdana ; " >Select time zone: <b><a href="http://liveclock.net/?tZone=Atlantic" class="t">Atlantic</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=Eastern" class="t">Eastern</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=Central" class="t">Central</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=Mountain" class="t">Mountain</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=Pacific" class="t">Pacific</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=Hawaii-Aleutian" class="t">Hawaii-Aleutian</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=Tokyo" class="t">Tokyo</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=London" class="t">London</a>&nbsp;&middot;&nbsp;<a href="http://liveclock.net/?tZone=GMT" class="t" title="Greenwich Mean Time" >GMT</a></b><br></p>
+<b><a href="javascript: Hide( prev ) ; prev = 'America' ; Show( prev ) ; " class="t" >Time in the Americas</a>&nbsp;&middot;&nbsp;<a href="javascript: Hide( prev ) ; prev = 'Asia' ; Show( prev ) ; " class="t" >Asia and Middle East</a>&nbsp;&middot;&nbsp;<a href="javascript: Hide( prev ) ; prev = 'Europe' ; Show( prev ) ; " class="t" >Europe</a>&nbsp;&middot;&nbsp;<a href="javascript: Hide( prev ) ; prev = 'Africa' ; Show( prev ) ; " class="t" >Africa</a>&nbsp;&middot;&nbsp;<a href="javascript: Hide( prev ) ; prev = 'Australia' ; Show( prev ) ; " class="t" >Australia</a>&nbsp;&middot;&nbsp;<a href="javascript: Hide( prev ) ; prev = 'Other' ; Show( prev ) ; " class="t" >Other</a></b><br><br>
+
+<table><tr>
+<td width="20%">&nbsp;</td>
+<td width="70%">
+<div align="left">
+<p><br>&nbsp;</p>
+
+<div id="initialLoad" style="display: none ; " >
+<table><tr height="300"><td>&nbsp;</td></tr></table>
+</div>
+
+<div id="America" style="display: none ; " >
+<p><font size="4">Times in the Americas</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="200">
+<img src="/img/transparentHorizontal.png" alt="spacer" width="200" >
+<a href="/?contin=America&zone=Adak">Adak</a><br><a href="/?contin=America&zone=Anchorage">Anchorage</a><br><a href="/?contin=America&zone=Anguilla">Anguilla</a><br><a href="/?contin=America&zone=Antigua">Antigua</a><br><a href="/?contin=America&zone=Araguaina">Araguaina</a><br><a href="/?contin=America&zone=Argentina/Buenos_Aires">Argentina/Buenos Aires</a><br><a href="/?contin=America&zone=Argentina/Catamarca">Argentina/Catamarca</a><br><a href="/?contin=America&zone=Argentina/ComodRivadavia">Argentina/ComodRivadavia</a><br><a href="/?contin=America&zone=Argentina/Cordoba">Argentina/Cordoba</a><br><a href="/?contin=America&zone=Argentina/Jujuy">Argentina/Jujuy</a><br><a href="/?contin=America&zone=Argentina/La_Rioja">Argentina/La Rioja</a><br><a href="/?contin=America&zone=Argentina/Mendoza">Argentina/Mendoza</a><br><a href="/?contin=America&zone=Argentina/Rio_Gallegos">Argentina/Rio Gallegos</a><br><a href="/?contin=America&zone=Argentina/Salta">Argentina/Salta</a><br><a href="/?contin=America&zone=Argentina/San_Juan">Argentina/San Juan</a><br><a href="/?contin=America&zone=Argentina/San_Luis">Argentina/San Luis</a><br><a href="/?contin=America&zone=Argentina/Tucuman">Argentina/Tucuman</a><br><a href="/?contin=America&zone=Argentina/Ushuaia">Argentina/Ushuaia</a><br><a href="/?contin=America&zone=Aruba">Aruba</a><br><a href="/?contin=America&zone=Asuncion">Asuncion</a><br><a href="/?contin=America&zone=Atikokan">Atikokan</a><br><a href="/?contin=America&zone=Atka">Atka</a><br><a href="/?contin=America&zone=Bahia">Bahia</a><br><a href="/?contin=America&zone=Bahia_Banderas">Bahia Banderas</a><br><a href="/?contin=America&zone=Barbados">Barbados</a><br><a href="/?contin=America&zone=Belem">Belem</a><br><a href="/?contin=America&zone=Belize">Belize</a><br><a href="/?contin=America&zone=Blanc-Sablon">Blanc-Sablon</a><br><a href="/?contin=America&zone=Boa_Vista">Boa Vista</a><br><a href="/?contin=America&zone=Bogota">Bogota</a><br><a href="/?contin=America&zone=Boise">Boise</a><br><a href="/?contin=America&zone=Buenos_Aires">Buenos Aires</a><br><a href="/?contin=America&zone=Cambridge_Bay">Cambridge Bay</a><br><a href="/?contin=America&zone=Campo_Grande">Campo Grande</a><br></td><td valign="top" width="200" ><img src="/img/transparentHorizontal.png" alt="spacer" width="200" ><a href="/?contin=America&zone=Cancun">Cancun</a><br><a href="/?contin=America&zone=Caracas">Caracas</a><br><a href="/?contin=America&zone=Catamarca">Catamarca</a><br><a href="/?contin=America&zone=Cayenne">Cayenne</a><br><a href="/?contin=America&zone=Cayman">Cayman</a><br><a href="/?contin=America&zone=Chicago">Chicago</a><br><a href="/?contin=America&zone=Chihuahua">Chihuahua</a><br><a href="/?contin=America&zone=Coral_Harbour">Coral Harbour</a><br><a href="/?contin=America&zone=Cordoba">Cordoba</a><br><a href="/?contin=America&zone=Costa_Rica">Costa Rica</a><br><a href="/?contin=America&zone=Creston">Creston</a><br><a href="/?contin=America&zone=Cuiaba">Cuiaba</a><br><a href="/?contin=America&zone=Curacao">Curacao</a><br><a href="/?contin=America&zone=Danmarkshavn">Danmarkshavn</a><br><a href="/?contin=America&zone=Dawson">Dawson</a><br><a href="/?contin=America&zone=Dawson_Creek">Dawson Creek</a><br><a href="/?contin=America&zone=Denver">Denver</a><br><a href="/?contin=America&zone=Detroit">Detroit</a><br><a href="/?contin=America&zone=Dominica">Dominica</a><br><a href="/?contin=America&zone=Edmonton">Edmonton</a><br><a href="/?contin=America&zone=Eirunepe">Eirunepe</a><br><a href="/?contin=America&zone=El_Salvador">El Salvador</a><br><a href="/?contin=America&zone=Ensenada">Ensenada</a><br><a href="/?contin=America&zone=Fort_Wayne">Fort Wayne</a><br><a href="/?contin=America&zone=Fortaleza">Fortaleza</a><br><a href="/?contin=America&zone=Glace_Bay">Glace Bay</a><br><a href="/?contin=America&zone=Godthab">Godthab</a><br><a href="/?contin=America&zone=Goose_Bay">Goose Bay</a><br><a href="/?contin=America&zone=Grand_Turk">Grand Turk</a><br><a href="/?contin=America&zone=Grenada">Grenada</a><br><a href="/?contin=America&zone=Guadeloupe">Guadeloupe</a><br><a href="/?contin=America&zone=Guatemala">Guatemala</a><br><a href="/?contin=America&zone=Guayaquil">Guayaquil</a><br><a href="/?contin=America&zone=Guyana">Guyana</a><br></td><td valign="top" width="200" ><img src="/img/transparentHorizontal.png" alt="spacer" width="200" ><a href="/?contin=America&zone=Halifax">Halifax</a><br><a href="/?contin=America&zone=Havana">Havana</a><br><a href="/?contin=America&zone=Hermosillo">Hermosillo</a><br><a href="/?contin=America&zone=Indiana/Indianapolis">Indiana/Indianapolis</a><br><a href="/?contin=America&zone=Indiana/Knox">Indiana/Knox</a><br><a href="/?contin=America&zone=Indiana/Marengo">Indiana/Marengo</a><br><a href="/?contin=America&zone=Indiana/Petersburg">Indiana/Petersburg</a><br><a href="/?contin=America&zone=Indiana/Tell_City">Indiana/Tell City</a><br><a href="/?contin=America&zone=Indiana/Vevay">Indiana/Vevay</a><br><a href="/?contin=America&zone=Indiana/Vincennes">Indiana/Vincennes</a><br><a href="/?contin=America&zone=Indiana/Winamac">Indiana/Winamac</a><br><a href="/?contin=America&zone=Indianapolis">Indianapolis</a><br><a href="/?contin=America&zone=Inuvik">Inuvik</a><br><a href="/?contin=America&zone=Iqaluit">Iqaluit</a><br><a href="/?contin=America&zone=Jamaica">Jamaica</a><br><a href="/?contin=America&zone=Jujuy">Jujuy</a><br><a href="/?contin=America&zone=Juneau">Juneau</a><br><a href="/?contin=America&zone=Kentucky/Louisville">Kentucky/Louisville</a><br><a href="/?contin=America&zone=Kentucky/Monticello">Kentucky/Monticello</a><br><a href="/?contin=America&zone=Knox_IN">Knox IN</a><br><a href="/?contin=America&zone=Kralendijk">Kralendijk</a><br><a href="/?contin=America&zone=La_Paz">La Paz</a><br><a href="/?contin=America&zone=Lima">Lima</a><br><a href="/?contin=America&zone=Los_Angeles">Los Angeles</a><br><a href="/?contin=America&zone=Louisville">Louisville</a><br><a href="/?contin=America&zone=Lower_Princes">Lower Princes</a><br><a href="/?contin=America&zone=Maceio">Maceio</a><br><a href="/?contin=America&zone=Managua">Managua</a><br><a href="/?contin=America&zone=Manaus">Manaus</a><br><a href="/?contin=America&zone=Marigot">Marigot</a><br><a href="/?contin=America&zone=Martinique">Martinique</a><br><a href="/?contin=America&zone=Matamoros">Matamoros</a><br><a href="/?contin=America&zone=Mazatlan">Mazatlan</a><br><a href="/?contin=America&zone=Mendoza">Mendoza</a><br></td><td valign="top" width="200" ><img src="/img/transparentHorizontal.png" alt="spacer" width="200" ><a href="/?contin=America&zone=Menominee">Menominee</a><br><a href="/?contin=America&zone=Merida">Merida</a><br><a href="/?contin=America&zone=Metlakatla">Metlakatla</a><br><a href="/?contin=America&zone=Mexico_City">Mexico City</a><br><a href="/?contin=America&zone=Miquelon">Miquelon</a><br><a href="/?contin=America&zone=Moncton">Moncton</a><br><a href="/?contin=America&zone=Monterrey">Monterrey</a><br><a href="/?contin=America&zone=Montevideo">Montevideo</a><br><a href="/?contin=America&zone=Montreal">Montreal</a><br><a href="/?contin=America&zone=Montserrat">Montserrat</a><br><a href="/?contin=America&zone=Nassau">Nassau</a><br><a href="/?contin=America&zone=New_York">New York</a><br><a href="/?contin=America&zone=Nipigon">Nipigon</a><br><a href="/?contin=America&zone=Nome">Nome</a><br><a href="/?contin=America&zone=Noronha">Noronha</a><br><a href="/?contin=America&zone=North_Dakota/Beulah">North Dakota/Beulah</a><br><a href="/?contin=America&zone=North_Dakota/Center">North Dakota/Center</a><br><a href="/?contin=America&zone=North_Dakota/New_Salem">North Dakota/New Salem</a><br><a href="/?contin=America&zone=Ojinaga">Ojinaga</a><br><a href="/?contin=America&zone=Panama">Panama</a><br><a href="/?contin=America&zone=Pangnirtung">Pangnirtung</a><br><a href="/?contin=America&zone=Paramaribo">Paramaribo</a><br><a href="/?contin=America&zone=Phoenix">Phoenix</a><br><a href="/?contin=America&zone=Port-au-Prince">Port-au-Prince</a><br><a href="/?contin=America&zone=Port_of_Spain">Port of Spain</a><br><a href="/?contin=America&zone=Porto_Acre">Porto Acre</a><br><a href="/?contin=America&zone=Porto_Velho">Porto Velho</a><br><a href="/?contin=America&zone=Puerto_Rico">Puerto Rico</a><br><a href="/?contin=America&zone=Rainy_River">Rainy River</a><br><a href="/?contin=America&zone=Rankin_Inlet">Rankin Inlet</a><br><a href="/?contin=America&zone=Recife">Recife</a><br><a href="/?contin=America&zone=Regina">Regina</a><br><a href="/?contin=America&zone=Resolute">Resolute</a><br><a href="/?contin=America&zone=Rio_Branco">Rio Branco</a><br></td><td valign="top" width="200" ><img src="/img/transparentHorizontal.png" alt="spacer" width="200" ><a href="/?contin=America&zone=Rio de Janeiro">Rio de Janeiro</a><br><a href="/?contin=America&zone=Rosario">Rosario</a><br><a href="/?contin=America&zone=Santa_Isabel">Santa Isabel</a><br><a href="/?contin=America&zone=Santarem">Santarem</a><br><a href="/?contin=America&zone=Santiago">Santiago</a><br><a href="/?contin=America&zone=Santo_Domingo">Santo Domingo</a><br><a href="/?contin=America&zone=Sao_Paulo">Sao Paulo</a><br><a href="/?contin=America&zone=Scoresbysund">Scoresbysund</a><br><a href="/?contin=America&zone=Shiprock">Shiprock</a><br><a href="/?contin=America&zone=Sitka">Sitka</a><br><a href="/?contin=America&zone=St_Barthelemy">St Barthelemy</a><br><a href="/?contin=America&zone=St_Johns">St Johns</a><br><a href="/?contin=America&zone=St_Kitts">St Kitts</a><br><a href="/?contin=America&zone=St_Lucia">St Lucia</a><br><a href="/?contin=America&zone=St_Thomas">St Thomas</a><br><a href="/?contin=America&zone=St_Vincent">St Vincent</a><br><a href="/?contin=America&zone=Swift_Current">Swift Current</a><br><a href="/?contin=America&zone=Tegucigalpa">Tegucigalpa</a><br><a href="/?contin=America&zone=Thule">Thule</a><br><a href="/?contin=America&zone=Thunder_Bay">Thunder Bay</a><br><a href="/?contin=America&zone=Tijuana">Tijuana</a><br><a href="/?contin=America&zone=Toronto">Toronto</a><br><a href="/?contin=America&zone=Tortola">Tortola</a><br><a href="/?contin=America&zone=Vancouver">Vancouver</a><br><a href="/?contin=America&zone=Virgin">Virgin</a><br><a href="/?contin=America&zone=Whitehorse">Whitehorse</a><br><a href="/?contin=America&zone=Winnipeg">Winnipeg</a><br><a href="/?contin=America&zone=Yakutat">Yakutat</a><br><a href="/?contin=America&zone=Yellowknife">Yellowknife</a><br><a href="/?contin=America&zone="></a><br>
+</td></tr></table></div>
+
+<div id="Asia" style="display: none ; " >
+<p><font size="4">Times in Asia and Middle East</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Asia&zone=Aden">Aden</a><br><a href="/?contin=Asia&zone=Almaty">Almaty</a><br><a href="/?contin=Asia&zone=Amman">Amman</a><br><a href="/?contin=Asia&zone=Anadyr">Anadyr</a><br><a href="/?contin=Asia&zone=Aqtau">Aqtau</a><br><a href="/?contin=Asia&zone=Aqtobe">Aqtobe</a><br><a href="/?contin=Asia&zone=Ashgabat">Ashgabat</a><br><a href="/?contin=Asia&zone=Ashkhabad">Ashkhabad</a><br><a href="/?contin=Asia&zone=Baghdad">Baghdad</a><br><a href="/?contin=Asia&zone=Bahrain">Bahrain</a><br><a href="/?contin=Asia&zone=Baku">Baku</a><br><a href="/?contin=Asia&zone=Bangkok">Bangkok</a><br><a href="/?contin=Asia&zone=Beirut">Beirut</a><br><a href="/?contin=Asia&zone=Bishkek">Bishkek</a><br><a href="/?contin=Asia&zone=Brunei">Brunei</a><br><a href="/?contin=Asia&zone=Calcutta">Calcutta</a><br><a href="/?contin=Asia&zone=Choibalsan">Choibalsan</a><br><a href="/?contin=Asia&zone=Chongqing">Chongqing</a><br></td><td valign="top" width="150"><a href="/?contin=Asia&zone=Chungking">Chungking</a><br><a href="/?contin=Asia&zone=Colombo">Colombo</a><br><a href="/?contin=Asia&zone=Dacca">Dacca</a><br><a href="/?contin=Asia&zone=Damascus">Damascus</a><br><a href="/?contin=Asia&zone=Dhaka">Dhaka</a><br><a href="/?contin=Asia&zone=Dili">Dili</a><br><a href="/?contin=Asia&zone=Dubai">Dubai</a><br><a href="/?contin=Asia&zone=Dushanbe">Dushanbe</a><br><a href="/?contin=Asia&zone=Gaza">Gaza</a><br><a href="/?contin=Asia&zone=Harbin">Harbin</a><br><a href="/?contin=Asia&zone=Hebron">Hebron</a><br><a href="/?contin=Asia&zone=Ho_Chi_Minh">Ho Chi Minh</a><br><a href="/?contin=Asia&zone=Hong_Kong">Hong Kong</a><br><a href="/?contin=Asia&zone=Hovd">Hovd</a><br><a href="/?contin=Asia&zone=Irkutsk">Irkutsk</a><br><a href="/?contin=Asia&zone=Istanbul">Istanbul</a><br><a href="/?contin=Asia&zone=Jakarta">Jakarta</a><br><a href="/?contin=Asia&zone=Jayapura">Jayapura</a><br></td><td valign="top" width="150"><a href="/?contin=Asia&zone=Jerusalem">Jerusalem</a><br><a href="/?contin=Asia&zone=Kabul">Kabul</a><br><a href="/?contin=Asia&zone=Kamchatka">Kamchatka</a><br><a href="/?contin=Asia&zone=Karachi">Karachi</a><br><a href="/?contin=Asia&zone=Kashgar">Kashgar</a><br><a href="/?contin=Asia&zone=Kathmandu">Kathmandu</a><br><a href="/?contin=Asia&zone=Katmandu">Katmandu</a><br><a href="/?contin=Asia&zone=Kolkata">Kolkata</a><br><a href="/?contin=Asia&zone=Krasnoyarsk">Krasnoyarsk</a><br><a href="/?contin=Asia&zone=Kuala_Lumpur">Kuala Lumpur</a><br><a href="/?contin=Asia&zone=Kuching">Kuching</a><br><a href="/?contin=Asia&zone=Kuwait">Kuwait</a><br><a href="/?contin=Asia&zone=Macao">Macao</a><br><a href="/?contin=Asia&zone=Macau">Macau</a><br><a href="/?contin=Asia&zone=Magadan">Magadan</a><br><a href="/?contin=Asia&zone=Makassar">Makassar</a><br><a href="/?contin=Asia&zone=Manila">Manila</a><br><a href="/?contin=Asia&zone=Muscat">Muscat</a><br></td><td valign="top" width="150"><a href="/?contin=Asia&zone=Nicosia">Nicosia</a><br><a href="/?contin=Asia&zone=Novokuznetsk">Novokuznetsk</a><br><a href="/?contin=Asia&zone=Novosibirsk">Novosibirsk</a><br><a href="/?contin=Asia&zone=Omsk">Omsk</a><br><a href="/?contin=Asia&zone=Oral">Oral</a><br><a href="/?contin=Asia&zone=Phnom_Penh">Phnom Penh</a><br><a href="/?contin=Asia&zone=Pontianak">Pontianak</a><br><a href="/?contin=Asia&zone=Pyongyang">Pyongyang</a><br><a href="/?contin=Asia&zone=Qatar">Qatar</a><br><a href="/?contin=Asia&zone=Qyzylorda">Qyzylorda</a><br><a href="/?contin=Asia&zone=Rangoon">Rangoon</a><br><a href="/?contin=Asia&zone=Riyadh">Riyadh</a><br><a href="/?contin=Asia&zone=Saigon">Saigon</a><br><a href="/?contin=Asia&zone=Sakhalin">Sakhalin</a><br><a href="/?contin=Asia&zone=Samarkand">Samarkand</a><br><a href="/?contin=Asia&zone=Seoul">Seoul</a><br><a href="/?contin=Asia&zone=Shanghai">Shanghai</a><br><a href="/?contin=Asia&zone=Singapore">Singapore</a><br></td><td valign="top" width="150"><a href="/?contin=Asia&zone=Taipei">Taipei</a><br><a href="/?contin=Asia&zone=Tashkent">Tashkent</a><br><a href="/?contin=Asia&zone=Tbilisi">Tbilisi</a><br><a href="/?contin=Asia&zone=Tehran">Tehran</a><br><a href="/?contin=Asia&zone=Tel_Aviv">Tel Aviv</a><br><a href="/?contin=Asia&zone=Thimbu">Thimbu</a><br><a href="/?contin=Asia&zone=Thimphu">Thimphu</a><br><a href="/?contin=Asia&zone=Tokyo">Tokyo</a><br><a href="/?contin=Asia&zone=Ujung_Pandang">Ujung Pandang</a><br><a href="/?contin=Asia&zone=Ulaanbaatar">Ulaanbaatar</a><br><a href="/?contin=Asia&zone=Ulan_Bator">Ulan Bator</a><br><a href="/?contin=Asia&zone=Urumqi">Urumqi</a><br><a href="/?contin=Asia&zone=Vientiane">Vientiane</a><br><a href="/?contin=Asia&zone=Vladivostok">Vladivostok</a><br><a href="/?contin=Asia&zone=Yakutsk">Yakutsk</a><br><a href="/?contin=Asia&zone=Yekaterinburg">Yekaterinburg</a><br><a href="/?contin=Asia&zone=Yerevan">Yerevan</a><br><a href="/?contin=Asia&zone="></a><br>
+</td></tr></table></div>
+
+<div id="Europe" style="display: none ; " >
+<p><font size="4">Times in Europe</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Europe&zone=Amsterdam">Amsterdam</a><br><a href="/?contin=Europe&zone=Andorra">Andorra</a><br><a href="/?contin=Europe&zone=Athens">Athens</a><br><a href="/?contin=Europe&zone=Belfast">Belfast</a><br><a href="/?contin=Europe&zone=Belgrade">Belgrade</a><br><a href="/?contin=Europe&zone=Berlin">Berlin</a><br><a href="/?contin=Europe&zone=Bratislava">Bratislava</a><br><a href="/?contin=Europe&zone=Brussels">Brussels</a><br><a href="/?contin=Europe&zone=Bucharest">Bucharest</a><br><a href="/?contin=Europe&zone=Budapest">Budapest</a><br><a href="/?contin=Europe&zone=Chisinau">Chisinau</a><br><a href="/?contin=Europe&zone=Copenhagen">Copenhagen</a><br></td><td valign="top" width="150"><a href="/?contin=Europe&zone=Dublin">Dublin</a><br><a href="/?contin=Europe&zone=Gibraltar">Gibraltar</a><br><a href="/?contin=Europe&zone=Guernsey">Guernsey</a><br><a href="/?contin=Europe&zone=Helsinki">Helsinki</a><br><a href="/?contin=Europe&zone=Isle_of_Man">Isle of Man</a><br><a href="/?contin=Europe&zone=Istanbul">Istanbul</a><br><a href="/?contin=Europe&zone=Jersey">Jersey</a><br><a href="/?contin=Europe&zone=Kaliningrad">Kaliningrad</a><br><a href="/?contin=Europe&zone=Kiev">Kiev</a><br><a href="/?contin=Europe&zone=Lisbon">Lisbon</a><br><a href="/?contin=Europe&zone=Ljubljana">Ljubljana</a><br><a href="/?contin=Europe&zone=London">London</a><br></td><td valign="top" width="150"><a href="/?contin=Europe&zone=Luxembourg">Luxembourg</a><br><a href="/?contin=Europe&zone=Madrid">Madrid</a><br><a href="/?contin=Europe&zone=Malta">Malta</a><br><a href="/?contin=Europe&zone=Mariehamn">Mariehamn</a><br><a href="/?contin=Europe&zone=Minsk">Minsk</a><br><a href="/?contin=Europe&zone=Monaco">Monaco</a><br><a href="/?contin=Europe&zone=Moscow">Moscow</a><br><a href="/?contin=Europe&zone=Nicosia">Nicosia</a><br><a href="/?contin=Europe&zone=Oslo">Oslo</a><br><a href="/?contin=Europe&zone=Paris">Paris</a><br><a href="/?contin=Europe&zone=Podgorica">Podgorica</a><br><a href="/?contin=Europe&zone=Prague">Prague</a><br></td><td valign="top" width="150"><a href="/?contin=Europe&zone=Riga">Riga</a><br><a href="/?contin=Europe&zone=Rome">Rome</a><br><a href="/?contin=Europe&zone=Samara">Samara</a><br><a href="/?contin=Europe&zone=San_Marino">San Marino</a><br><a href="/?contin=Europe&zone=Sarajevo">Sarajevo</a><br><a href="/?contin=Europe&zone=Simferopol">Simferopol</a><br><a href="/?contin=Europe&zone=Skopje">Skopje</a><br><a href="/?contin=Europe&zone=Sofia">Sofia</a><br><a href="/?contin=Europe&zone=Stockholm">Stockholm</a><br><a href="/?contin=Europe&zone=Tallinn">Tallinn</a><br><a href="/?contin=Europe&zone=Tirane">Tirane</a><br><a href="/?contin=Europe&zone=Tiraspol">Tiraspol</a><br></td><td valign="top" width="150"><a href="/?contin=Europe&zone=Uzhgorod">Uzhgorod</a><br><a href="/?contin=Europe&zone=Vaduz">Vaduz</a><br><a href="/?contin=Europe&zone=Vatican">Vatican</a><br><a href="/?contin=Europe&zone=Vienna">Vienna</a><br><a href="/?contin=Europe&zone=Vilnius">Vilnius</a><br><a href="/?contin=Europe&zone=Volgograd">Volgograd</a><br><a href="/?contin=Europe&zone=Warsaw">Warsaw</a><br><a href="/?contin=Europe&zone=Zagreb">Zagreb</a><br><a href="/?contin=Europe&zone=Zaporozhye">Zaporozhye</a><br><a href="/?contin=Europe&zone=Zurich">Zurich</a><br><a href="/?contin=Europe&zone="></a><br>
+</td></tr></table></div>
+
+<div id="Africa" style="display: none ; " >
+<p><font size="4">Times in Africa</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150" >
+<a href="/?contin=Africa&zone=Abidjan">Abidjan</a><br><a href="/?contin=Africa&zone=Accra">Accra</a><br><a href="/?contin=Africa&zone=Addis_Ababa">Addis Ababa</a><br><a href="/?contin=Africa&zone=Algiers">Algiers</a><br><a href="/?contin=Africa&zone=Asmara">Asmara</a><br><a href="/?contin=Africa&zone=Asmera">Asmera</a><br><a href="/?contin=Africa&zone=Bamako">Bamako</a><br><a href="/?contin=Africa&zone=Bangui">Bangui</a><br><a href="/?contin=Africa&zone=Banjul">Banjul</a><br><a href="/?contin=Africa&zone=Bissau">Bissau</a><br><a href="/?contin=Africa&zone=Blantyre">Blantyre</a><br></td><td valign="top" width="150" ><a href="/?contin=Africa&zone=Brazzaville">Brazzaville</a><br><a href="/?contin=Africa&zone=Bujumbura">Bujumbura</a><br><a href="/?contin=Africa&zone=Cairo">Cairo</a><br><a href="/?contin=Africa&zone=Casablanca">Casablanca</a><br><a href="/?contin=Africa&zone=Ceuta">Ceuta</a><br><a href="/?contin=Africa&zone=Conakry">Conakry</a><br><a href="/?contin=Africa&zone=Dakar">Dakar</a><br><a href="/?contin=Africa&zone=Dar_es_Salaam">Dar es Salaam</a><br><a href="/?contin=Africa&zone=Djibouti">Djibouti</a><br><a href="/?contin=Africa&zone=Douala">Douala</a><br><a href="/?contin=Africa&zone=El_Aaiun">El Aaiun</a><br></td><td valign="top" width="150" ><a href="/?contin=Africa&zone=Freetown">Freetown</a><br><a href="/?contin=Africa&zone=Gaborone">Gaborone</a><br><a href="/?contin=Africa&zone=Harare">Harare</a><br><a href="/?contin=Africa&zone=Johannesburg">Johannesburg</a><br><a href="/?contin=Africa&zone=Juba">Juba</a><br><a href="/?contin=Africa&zone=Kampala">Kampala</a><br><a href="/?contin=Africa&zone=Khartoum">Khartoum</a><br><a href="/?contin=Africa&zone=Kigali">Kigali</a><br><a href="/?contin=Africa&zone=Kinshasa">Kinshasa</a><br><a href="/?contin=Africa&zone=Lagos">Lagos</a><br><a href="/?contin=Africa&zone=Libreville">Libreville</a><br></td><td valign="top" width="150" ><a href="/?contin=Africa&zone=Lome">Lome</a><br><a href="/?contin=Africa&zone=Luanda">Luanda</a><br><a href="/?contin=Africa&zone=Lubumbashi">Lubumbashi</a><br><a href="/?contin=Africa&zone=Lusaka">Lusaka</a><br><a href="/?contin=Africa&zone=Malabo">Malabo</a><br><a href="/?contin=Africa&zone=Maputo">Maputo</a><br><a href="/?contin=Africa&zone=Maseru">Maseru</a><br><a href="/?contin=Africa&zone=Mbabane">Mbabane</a><br><a href="/?contin=Africa&zone=Mogadishu">Mogadishu</a><br><a href="/?contin=Africa&zone=Monrovia">Monrovia</a><br><a href="/?contin=Africa&zone=Nairobi">Nairobi</a><br></td><td valign="top" width="150" ><a href="/?contin=Africa&zone=Ndjamena">Ndjamena</a><br><a href="/?contin=Africa&zone=Niamey">Niamey</a><br><a href="/?contin=Africa&zone=Nouakchott">Nouakchott</a><br><a href="/?contin=Africa&zone=Ouagadougou">Ouagadougou</a><br><a href="/?contin=Africa&zone=Porto-Novo">Porto-Novo</a><br><a href="/?contin=Africa&zone=Sao_Tome">Sao Tome</a><br><a href="/?contin=Africa&zone=Timbuktu">Timbuktu</a><br><a href="/?contin=Africa&zone=Tripoli">Tripoli</a><br><a href="/?contin=Africa&zone=Tunis">Tunis</a><br><a href="/?contin=Africa&zone=Windhoek">Windhoek</a><br><a href="/?contin=Africa&zone="></a><br>
+</td></tr></table></div>
+
+<div id="Australia" style="display: none ; " >
+<p><font size="4">Times in Australia</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Australia&zone=ACT">ACT</a><br><a href="/?contin=Australia&zone=Adelaide">Adelaide</a><br><a href="/?contin=Australia&zone=Brisbane">Brisbane</a><br><a href="/?contin=Australia&zone=Broken_Hill">Broken Hill</a><br><a href="/?contin=Australia&zone=Canberra">Canberra</a><br><a href="/?contin=Australia&zone=Currie">Currie</a><br><a href="/?contin=Australia&zone=Darwin">Darwin</a><br><a href="/?contin=Australia&zone=Eucla">Eucla</a><br></td><td valign="top" width="150"><a href="/?contin=Australia&zone=Hobart">Hobart</a><br><a href="/?contin=Australia&zone=LHI">LHI</a><br><a href="/?contin=Australia&zone=Lindeman">Lindeman</a><br><a href="/?contin=Australia&zone=Lord_Howe">Lord Howe</a><br><a href="/?contin=Australia&zone=Melbourne">Melbourne</a><br><a href="/?contin=Australia&zone=North">North</a><br><a href="/?contin=Australia&zone=NSW">NSW</a><br><a href="/?contin=Australia&zone=Perth">Perth</a><br></td><td valign="top" width="150"><a href="/?contin=Australia&zone=Queensland">Queensland</a><br><a href="/?contin=Australia&zone=South">South</a><br><a href="/?contin=Australia&zone=Sydney">Sydney</a><br><a href="/?contin=Australia&zone=Tasmania">Tasmania</a><br><a href="/?contin=Australia&zone=Victoria">Victoria</a><br><a href="/?contin=Australia&zone=West">West</a><br><a href="/?contin=Australia&zone=Yancowinna">Yancowinna</a><br><a href="/?contin=Australia&zone="></a><br>
+</td></tr></table></div>
+
+<div id="Other" style="display: none ; " >
+<p><font size="4">Atlantic Ocean</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Atlantic&zone=Azores">Azores</a><br><a href="/?contin=Atlantic&zone=Bermuda">Bermuda</a><br><a href="/?contin=Atlantic&zone=Canary">Canary</a><br><a href="/?contin=Atlantic&zone=Cape_Verde">Cape Verde</a><br><a href="/?contin=Atlantic&zone=Faeroe">Faeroe</a><br></td><td valign="top" width="150"><a href="/?contin=Atlantic&zone=Faroe">Faroe</a><br><a href="/?contin=Atlantic&zone=Jan_Mayen">Jan Mayen</a><br><a href="/?contin=Atlantic&zone=Madeira">Madeira</a><br><a href="/?contin=Atlantic&zone=Reykjavik">Reykjavik</a><br><a href="/?contin=Atlantic&zone=South_Georgia">South Georgia</a><br></td><td valign="top" width="150"><a href="/?contin=Atlantic&zone=St_Helena">St Helena</a><br><a href="/?contin=Atlantic&zone=Stanley">Stanley</a><br><a href="/?contin=Atlantic&zone="></a><br>
+</td></tr></table>
+<p><br><font size="4">Pacific Ocean</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Pacific&zone=Apia">Apia</a><br><a href="/?contin=Pacific&zone=Auckland">Auckland</a><br><a href="/?contin=Pacific&zone=Chatham">Chatham</a><br><a href="/?contin=Pacific&zone=Chuuk">Chuuk</a><br><a href="/?contin=Pacific&zone=Easter">Easter</a><br><a href="/?contin=Pacific&zone=Efate">Efate</a><br><a href="/?contin=Pacific&zone=Enderbury">Enderbury</a><br><a href="/?contin=Pacific&zone=Fakaofo">Fakaofo</a><br><a href="/?contin=Pacific&zone=Fiji">Fiji</a><br><a href="/?contin=Pacific&zone=Funafuti">Funafuti</a><br><a href="/?contin=Pacific&zone=Galapagos">Galapagos</a><br><a href="/?contin=Pacific&zone=Gambier">Gambier</a><br><a href="/?contin=Pacific&zone=Guadalcanal">Guadalcanal</a><br><a href="/?contin=Pacific&zone=Guam">Guam</a><br><a href="/?contin=Pacific&zone=Honolulu">Honolulu</a><br></td><td valign="top" width="150"><a href="/?contin=Pacific&zone=Johnston">Johnston</a><br><a href="/?contin=Pacific&zone=Kiritimati">Kiritimati</a><br><a href="/?contin=Pacific&zone=Kosrae">Kosrae</a><br><a href="/?contin=Pacific&zone=Kwajalein">Kwajalein</a><br><a href="/?contin=Pacific&zone=Majuro">Majuro</a><br><a href="/?contin=Pacific&zone=Marquesas">Marquesas</a><br><a href="/?contin=Pacific&zone=Midway">Midway</a><br><a href="/?contin=Pacific&zone=Nauru">Nauru</a><br><a href="/?contin=Pacific&zone=Niue">Niue</a><br><a href="/?contin=Pacific&zone=Norfolk">Norfolk</a><br><a href="/?contin=Pacific&zone=Noumea">Noumea</a><br><a href="/?contin=Pacific&zone=Pago_Pago">Pago Pago</a><br><a href="/?contin=Pacific&zone=Palau">Palau</a><br><a href="/?contin=Pacific&zone=Pitcairn">Pitcairn</a><br><a href="/?contin=Pacific&zone=Pohnpei">Pohnpei</a><br></td><td valign="top" width="150"><a href="/?contin=Pacific&zone=Ponape">Ponape</a><br><a href="/?contin=Pacific&zone=Port_Moresby">Port Moresby</a><br><a href="/?contin=Pacific&zone=Rarotonga">Rarotonga</a><br><a href="/?contin=Pacific&zone=Saipan">Saipan</a><br><a href="/?contin=Pacific&zone=Samoa">Samoa</a><br><a href="/?contin=Pacific&zone=Tahiti">Tahiti</a><br><a href="/?contin=Pacific&zone=Tarawa">Tarawa</a><br><a href="/?contin=Pacific&zone=Tongatapu">Tongatapu</a><br><a href="/?contin=Pacific&zone=Truk">Truk</a><br><a href="/?contin=Pacific&zone=Wake">Wake</a><br><a href="/?contin=Pacific&zone=Wallis">Wallis</a><br><a href="/?contin=Pacific&zone=Yap">Yap</a><br><a href="/?contin=Pacific&zone="></a><br>
+</td></tr></table>
+<p><br><font size="4">Indian Ocean</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Indian&zone=Antananarivo">Antananarivo</a><br><a href="/?contin=Indian&zone=Chagos">Chagos</a><br><a href="/?contin=Indian&zone=Christmas">Christmas</a><br><a href="/?contin=Indian&zone=Cocos">Cocos</a><br></td><td valign="top" width="150"><a href="/?contin=Indian&zone=Comoro">Comoro</a><br><a href="/?contin=Indian&zone=Kerguelen">Kerguelen</a><br><a href="/?contin=Indian&zone=Mahe">Mahe</a><br><a href="/?contin=Indian&zone=Maldives">Maldives</a><br></td><td valign="top" width="150"><a href="/?contin=Indian&zone=Mauritius">Mauritius</a><br><a href="/?contin=Indian&zone=Mayotte">Mayotte</a><br><a href="/?contin=Indian&zone=Reunion">Reunion</a><br><a href="/?contin=Indian&zone="></a><br>
+</td></tr></table>
+<p><br><font size="4">Times in Antarctica</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Antarctica&zone=Casey">Casey</a><br><a href="/?contin=Antarctica&zone=Davis">Davis</a><br><a href="/?contin=Antarctica&zone=DumontDUrville">Dumont d'Urville</a><br><a href="/?contin=Antarctica&zone=Macquarie">Macquarie</a><br></td><td valign="top" width="150"><a href="/?contin=Antarctica&zone=Mawson">Mawson</a><br><a href="/?contin=Antarctica&zone=McMurdo">McMurdo</a><br><a href="/?contin=Antarctica&zone=Palmer">Palmer</a><br><a href="/?contin=Antarctica&zone=Rothera">Rothera</a><br></td><td valign="top" width="150"><a href="/?contin=Antarctica&zone=South_Pole">South Pole</a><br><a href="/?contin=Antarctica&zone=Syowa">Syowa</a><br><a href="/?contin=Antarctica&zone=Vostok">Vostok</a><br><a href="/?contin=Antarctica&zone="></a><br>
+</td></tr></table>
+<p><br><font size="4">Arctic</font><br>&nbsp;</p>
+<table><tr><td valign="top" width="150">
+<a href="/?contin=Arctic&zone=Longyearbyen">Longyearbyen</a><br>
+</td></tr></table>
+
+</div>
+
+</td>
+<td width="10%">&nbsp;</td>
+</tr></table>
 
-<font class="quote">&#8220;Hail Patrick Rothfuss! A new giant is striding the land. THE NAME OF THE WIND is an astonishing novel that just happens to be the writer&#39;s first.&#8221;</font><font class="quote2"><div align="right"><i>-Robert J. Sawyer, Hugo Award-winning author of ROLLBACK</i></div></font>
-
-
-<!--END ROTATING QUOTE-->
-
-<font class="text">
-<a href="../content/reviews.asp" class="small">Read more reviews</a>
-<br>
-<br>
-<b>THE POWERFUL DEBUT NOVEL FROM FANTASY'S NEXT SUPERSTAR</b> 
-<br>
-Told in Kvothe's own voice, this is the tale of the magically gifted young man who grows to be the most notorious wizard his world has ever seen.The intimate narrative of his childhood in a troupe of traveling players, his years spent as a near-feral orphan in a crime-ridden city, his daringly brazen yet successful bid to enter a legendary school of magic, and his life as a fugitive after the murder of a king form a gripping coming-of-age story unrivaled in recent literature. A high-action story written with a poet's hand, The Name of the Wind is a masterpiece that will transport readers into the body and mind of a wizard.
-<br><br>
-
-
-<b>NEWEST BLOGS</b>
-<br />
-<img src="../images/page/home_photo.jpg" style="margin: 0px 0px 10px 20px; padding: 0px; float: right;" border="0" usemap="#Map">
-
-<script src="http://feeds2.feedburner.com/PatrickRothfuss?format=sigpro" type="text/javascript" ></script><noscript><p>Subscribe to RSS headline updates from: <a href="http://feeds2.feedburner.com/PatrickRothfuss"></a><br/>Powered by FeedBurner</p> </noscript>
-<br /><br />
-
-<b>Have questions about book two? About contacting Pat? About anything? Why not check the <a href="../content/contact.asp#faq">FAQ</a>?</b>
-<br /><br />
-
-
-<!--
- <b>From <i>Publishers Weekly</i></b>
-<br>
-<img src="../images/page/home_photo.jpg" style="margin: 0px 0px 10px 20px; padding: 0px; float: right;" border="0" usemap="#Map">
-  <b>Starred Review</b>. The originality of Rothfuss's outstanding debut fantasy, the first of a trilogy, lies less in its unnamed imaginary world than in its precise execution. Kvothe ("pronounced nearly the same as 'Quothe' "), the hero and villain of a thousand tales who's presumed dead, lives as the simple proprietor of the Waystone Inn under an assumed name. Prompted by a biographer called Chronicler who realizes his true identity, Kvothe starts to tell his life story. >From his upbringing as an actor in his family's traveling troupe of magicians, jugglers and jesters, the Edema Ruh, to feral child on the streets of the vast port city of Tarbean, then his education at "the University," Kvothe is driven by twin imperatives-his desire to learn the higher magic of naming and his need to discover as much as possible about the Chandrian, the demons of legend who murdered his family. As absorbing on a second reading as it is on the first, this is the type of assured, rich first novel most writers can only dream of producing. The fantasy world has a new star.
-<br>
-<i>Copyright &copy; Reed Business Information, a division of Reed Elsevier Inc. All rights reserved.</i>
-  <br><br>
-  -->
-  
-
-<a href="../content/note.asp"><b>Read a special note from the publisher, Elizabeth Wollheim.</b></a></font></td>
-  </tr>
-</table>
- 
-<br><br>
+
+<div align="center" id="SysDate" class="s4" style="display: none ; " >
+<form id="cpuD" > 
+<input type="text" name="dateString" readonly >
+</form>
+</div>
+
+<div align="center" id="SysClock" class="s4" style="display: none ; " >
+<form id="cpuT" > 
+<input type="text" name="clockString" readonly >
+</form>
+</div>
+
+<div align="center" id="filler" style="display: block ; font: 16px Verdana ; padding: 1px ; " >
+&nbsp;
+</div>
 
 </div>
-<!--END PAGE CONTENT-->
-<map name="Map" id="Map"><area shape="rect" coords="2,1,247,25" href="../blog/blog.html" />
-<area shape="rect" coords="3,27,246,49" href="../content/tour.asp" />
-</map>
+</td>
+<td width="10%"> <br> </td>
+</tr></table>
 
-<!--END PAGE CONTENT-->
+<table><tr height="100"><td> <br> </td></tr></table>
+
+<div align="center" class="s3">
+<form id="clock3" > 
+<input type="text" name="display3" readonly >
+</form>
+</div>
+
+<table>
+<td width="30%"> <br> </td>
+<td width="40%">
+<img src="img/transparentHorizontal.png" alt="+" width="1000" height="1">
+
+<div align="center">
+<p><br>&nbsp;</p>
+<p style="font: 10px Verdana ; " >Another <a href="http://justword.net" class="t" >JustWord</a> website, &copy; 2016<b>&nbsp;&middot;&nbsp;</b><a href="javascript:
+contactWindow=window.open( 'http://liveclock.net/contact.htm','_blank','location=0,left=1,top=1,height=400,width=400' ) ; contactWindow.focus() ; " class="t" >Contact</a>
+<br>&nbsp;</p>
+</div>
 
 </td>
-  </tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<br><br>
-
-	<table width="800" height="80" cellpadding="0" cellspacing="0" border="0" align="center">
-	  <tr>
-	  	<td width="375" align="left" valign="top">
-<div style="margin-left: 10px;">
-<font class="copyright">
-&copy; 2016 Patrick Rothfuss. All Rights Reserved<br>
-</font>
-</div></td>
-	<td align="right" valign="top">
-<div style="width: 184px; margin-bottom: 14px;">
-<div align="center">
-<font class="aotw">
-website designed and hosted by<br />
-<a href="http://www.AuthorsOnTheWeb.com" class="aotw" target="blank">AuthorsOnTheWeb.com</a>
-</font>
-</div>
-</div></td>
-  	  </tr>
-	</table>
-	
-
+<td width="30%"> <br> </td>
+</tr></table>
+
+</div>
 
 </body>
-
-
 </html>

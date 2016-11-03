@@ -4,7 +4,7 @@ import com.gmail.rickard.bernal.fileManagement.FileHandler;
 
 public class WatchdogEvolvedMain {
     public static void main(String[] args) {
-        String url = "http://www.patrickrothfuss.com/content/index.asp";
+        String url = "http://liveclock.net/";
         FileHandler fileHandler = new FileHandler(url);
     }
 }
